@@ -5,18 +5,19 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <errno.h>
-
+#include <stdio.h>
 #include "libNativeI2C.h"
-
 
 int openBus (char* busFileName)
 {
-	return open (busFileName, O_RDWR);
+    int r = open (busFileName, O_RDWR);
+    printf("Opening %2s , result %i", busFileName, r);
+    return r;
 }
 
 int closeBus (int busHandle)
 {
-	return close (busHandle);
+    return  close (busHandle);
 }
 
 int writeBytes (int busHandle, int addr, byte* buf, int len)
