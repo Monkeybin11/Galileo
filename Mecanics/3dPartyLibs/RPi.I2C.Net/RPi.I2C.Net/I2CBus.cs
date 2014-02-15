@@ -15,7 +15,7 @@ namespace RPi.I2C.Net
 		/// .ctor
 		/// </summary>
 		/// <param name="busPath"></param>
-		protected I2CBus(string busPath)
+		public I2CBus(string busPath)
 		{
 			int res= I2CNativeLib.OpenBus(busPath);
 			if (res< 0)
