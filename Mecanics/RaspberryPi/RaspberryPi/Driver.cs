@@ -32,13 +32,18 @@ namespace RaspberryPi
 
         public void begin()
         {
-            bus = new I2CBus("/dev/i2c-1");
+            Console.WriteLine("[Begin] Starting");
+            bus = new I2CBus(I2CBusPath);
+            Console.WriteLine("[Begin] Bus created");
             reset();
+            Console.WriteLine("[Begin] reseted");
         }
 
         private void reset()
         {
+            Console.WriteLine("[Reset] starting");
             write8(PCA9685_MODE1, 0x0);
+            Console.WriteLine("[Reset] Done");
         }
 
         public void setPWMFreq(float freq)
@@ -50,11 +55,12 @@ namespace RaspberryPi
             prescaleval /= 4096;
             prescaleval /= freq;
             prescaleval -= 1;
-            Console.Write("Estimated pre-scale: ");
-            Console.WriteLine(prescaleval);
+
+            Console.Write("Estimated pre-scale: {0}", prescaleval);
+
             byte prescale = (byte)Math.Truncate(prescaleval + 0.5);
-            Console.Write("Final pre-scale: ");
-            Console.WriteLine(prescale);
+
+            Console.Write("Final pre-scale: {0}", prescale);
 
             byte oldmode = read8(PCA9685_MODE1);
             byte newmode = (byte)((oldmode & 0x7F) | 0x10); // sleep
@@ -92,20 +98,24 @@ namespace RaspberryPi
 
         private void write8(byte addr, byte d)
         {
+            Console.WriteLine("[Write 8] address {0}, byte {1}.");
             //  WIRE.beginTransmission(_i2caddr);
             write(addr);
             write(d);
+            Console.WriteLine("[Write 8] done");
             //  WIRE.endTransmission();
         }
 
         private void write(int i)
         {
+            Console.WriteLine("[Write] {0}", i);
             var bytes = BitConverter.GetBytes(i);
             bus.WriteBytes(BusAdress, bytes);
         }
 
         private void write(byte i)
         {
+            Console.WriteLine("[Write] {0}", i);
             var bytes = BitConverter.GetBytes(i);
             bus.WriteBytes(BusAdress, bytes);
         }
@@ -113,6 +123,7 @@ namespace RaspberryPi
 
         private void write(char i)
         {
+            Console.WriteLine("[Write] {0}", i);
             var bytes = BitConverter.GetBytes(i);
             bus.WriteBytes(BusAdress, bytes);
         }
