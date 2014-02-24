@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Threading;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
@@ -43,9 +44,15 @@ namespace GalileoDriver
             log.Info("I2C test");
             int address = 0x2a;
             I2CBus bus = I2CBus.Open(@"/dev/i2c-1");
+	    log.Info("Opened");
+	    Thread.Sleep(10);
+	    log.Info("1");
             bus.WriteByte(address, 1);
+	    Thread.Sleep(10);
+	    log.Info("2");
             bus.WriteBytes(address, new byte[]{1,2,3});
-            
+	    Thread.Sleep(10);
+            log.Info("3");
 
             try
             {
