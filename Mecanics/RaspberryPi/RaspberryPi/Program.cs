@@ -1,64 +1,38 @@
 ﻿using System;
-using RPi.I2C.Net;
+using System.ServiceModel;
+using System.Threading;
+using RaspberryPi.Connection;
+using NLog;
 
 namespace RaspberryPi
 {
     class Program
     {
-//        private const string I2CBusPath = "/dev/i2c-1";
-//        private const int BusAdress = 0x40;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        PwmServoDriver pwm = new PwmServoDriver();
-
-        const int SERVOMIN = 150; // this is the 'minimum' pulse length count (out of 4096)
-        const int SERVOMAX = 600; // this is the 'maximum' pulse length count (out of 4096)
-
-        byte servonum = 0;
-
-        void setup()
+        public static void Main()
         {
-            Console.WriteLine("16 channel Servo test!");
-            pwm.begin();
-            pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
-        }
+            logger.Info("\n\n Starting Curiosity service");
 
-        // you can use this function if you'd like to set the pulse length in seconds
-        // e.g. setServoPulse(0, 0.001) is a ~1 millisecond pulse width. its not precise!
-        void setServoPulse(byte n, double pulse)
-        {
-            double pulselength;
-            pulselength = 1000000;   // 1,000,000 us per second
-            pulselength /= 60;   // 60 Hz
+            try
+            {
+                var host = new ServiceHost(typeof(Galileo), new Uri(@"http://192.168.1.5:10000") );
+                logger.Info("Service configured on {0} endpoints", host.Description.Endpoints.Count);
+                foreach (var endpoint in host.Description.Endpoints)
+                {
+                    logger.Info(endpoint.Address);
+                }
+                logger.Info("Starting host");
+                host.Open();
+                logger.Info("Service setarted.");
+            }
+            catch (Exception e)
+            {
+                logger.Error("Exeption in the service", e);
+            }
             
-            Console.Write(pulselength); Console.WriteLine(" us per period");
-
-            pulselength /= 4096;  // 12 bits of resolution
-            Console.Write(pulselength); Console.WriteLine(" us per bit");
-            pulse *= 1000;
-            pulse /= pulselength;
-            Console.WriteLine(pulse);
-            pwm.setPWM(n, (char)0, (char)pulse);
-        }
-
-        static void Main(string[] args)
-        {
-            Console.WriteLine("\n\nStarting...");
-            var p = new Program();
-            p.setup();
-            Console.WriteLine("Setuped");
-            p.setServoPulse(5, 0.001);
-            Console.WriteLine("Done.");
-
-//            using (var bus = I2CBus.Open(I2CBusPath))
-//            {
-//                Console.WriteLine("Will start _ ");	
-//                bus.WriteByte(BusAdress, 255);
-//                Console.WriteLine("Done.");
-//                Console.Read();
-//            }
-
-
-
+            logger.Info("Press enter for exit");
+            Console.Read();
         }
     }
 }
