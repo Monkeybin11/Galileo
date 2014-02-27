@@ -55,14 +55,15 @@ namespace GalileoDriver
 
         public void Open(string busPath)
         {
+	    log.Trace("I2C bus opening");
             BusPath = busPath;
             int res = I2CNativeLib.OpenBus(busPath);
             if (res < 0)
             {
                 throw new IOException( String.Format("Error opening bus '{0}': {1}", busPath, UnixMarshal.GetErrorDescription(Stdlib.GetLastError())));
             }
-
             busHandle = res;
+	    log.Trace("I2C bus handle - {0}", busHandle);
         }
 
         public void WriteByte(int address, byte b)
@@ -74,7 +75,9 @@ namespace GalileoDriver
         
         public void WriteBytes(int address, byte[] bytes)
         {
+	    log.Trace("Writing to I2C. Bus handle {0}", busHandle);
             var res = I2CNativeLib.WriteBytes(busHandle, address, bytes, bytes.Length);
+
             if (res == -1)
             {
                 string message = String.Format(
