@@ -28,7 +28,7 @@ namespace RaspberryPi
             }
             catch (Exception e)
             {
-                logger.Error("Exeption in the service", e);
+                logger.Error("Exeption in the service {0}", e);
             }
             
             logger.Info("Press enter for exit");
