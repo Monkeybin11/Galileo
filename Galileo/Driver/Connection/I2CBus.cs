@@ -131,6 +131,7 @@ namespace GalileoDriver
 
         protected virtual void Dispose(bool disposing)
         {
+	    log.Trace("Disposing");
             if (disposing)
             {
                 // disposing managed resouces
