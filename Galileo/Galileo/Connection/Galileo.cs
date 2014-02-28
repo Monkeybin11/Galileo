@@ -1,5 +1,8 @@
-﻿namespace RaspberryPi.Connection
+﻿using System.ServiceModel;
+
+namespace Galileo.Connection
 {
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class Galileo : IGalileo
     {
         public bool Start()

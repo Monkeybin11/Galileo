@@ -1,6 +1,7 @@
-﻿using System.ServiceModel;
+﻿using System;
+using System.ServiceModel;
 
-namespace RaspberryPi.Connection
+namespace Galileo.Connection
 {
     /// <summary>
     /// Represent base communication interface to the Galileo
