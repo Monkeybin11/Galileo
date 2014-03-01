@@ -21,9 +21,8 @@ namespace Galileo
             {
                 var container = new UnityContainer();
                 container.LoadConfiguration();
-
                 
-                host = new ServiceHost(container.Resolve<IGalileo>(), new Uri(Settings.Default.BaseAddress));
+                host = new ServiceHost(container.Resolve<IGalileo>());
                 logger.Info("Service configured on {0} endpoints", host.Description.Endpoints.Count);
                 foreach (var endpoint in host.Description.Endpoints)
                 {
@@ -45,10 +44,6 @@ namespace Galileo
             }
             finally
             {
-                if (host != null && (host.State != CommunicationState.Closed || host.State != CommunicationState.Closing))
-                {
-                    host.Close();
-                }
                 if (exceptionOccured)
                 {
                     logger.Info("Press enter for exit");
