@@ -37,5 +37,11 @@ namespace Galileo.Connection
         /// <returns>True if sucsesfully</returns>
         [OperationContract]
         bool Restart();
+
+        /// <summary>
+        /// Receive DriverConfiguration and apply it
+        /// </summary>
+        [OperationContract]
+        void ApplyFirmware();
     }
 }

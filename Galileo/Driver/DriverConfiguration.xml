@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DriverConfigurations>
+  <Configuration name="Main">
+    <Devices>
+      <RaspberryPi2 IsEnable="true" name ="Raspberry">
+
+        <Wireless/>
+        <RemoteControl/>
+
+        <Devices>
+
+          <ArduinoMicro IsEnable="true" name ="Arduino">
+            <Devices>
+
+              <Transmission IsEnable="true" name ="Transmission">
+                <Vhile name="FrontLeft" IsEnable="true"/>
+                <Vhile name="FrontRight" IsEnable="true"/>
+                <Vhile name="BackLeft" IsEnable="true"/>
+                <Vhile name="BackRight" IsEnable="true"/>
+              </Transmission>
+
+              <Distometer IsEnable="false" name="Distometer"/>
+            </Devices>
+          </ArduinoMicro>
+
+          <Accelerometer IsEnable="false" name ="Accelerometer"/>
+
+        </Devices>
+      </RaspberryPi2>
+    </Devices>
+  </Configuration>
+
+</DriverConfigurations>

@@ -14,7 +14,9 @@ namespace Galileo
         
         public static void Main()
         {
-            logger.Info("\n\n Starting Curiosity service");
+            logger.Info("========================================================================================");
+            logger.Info("==========================     Starting Curiosity service  =============================");
+            logger.Info("========================================================================================");
             ServiceHost host = null;
             var exceptionOccured = false;
             try
