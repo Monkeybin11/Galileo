@@ -53,11 +53,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArduinoMicro\ArduinoMicro.cs" />
+    <Compile Include="ConnectionProtocols\ConnectionProtocolType.cs" />
+    <Compile Include="ConnectionProtocols\IConnection.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="DeviceBuilder.cs" />
     <Compile Include="DeviceName.cs" />
     <Compile Include="DeviceType.cs" />
     <Compile Include="Driver.cs" />
+    <Compile Include="ConnectionProtocols\I2CConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RaspberryPi2\RaspberryPi2.cs" />
     <Compile Include="DeviceConstant.cs" />

@@ -32,7 +32,7 @@ namespace GalileoDriver.RaspberryPi2
         //    <Devices/>
         //</RaspberryPi2>
         /// <summary>
-        /// Configura device
+        /// Configuration device
         /// </summary>
         /// <param name="config">device configuration</param>
         private void ApplyConfiguration(XElement config)

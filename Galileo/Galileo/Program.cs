@@ -2,6 +2,7 @@
 using System.ServiceModel;
 using Galileo.Connection;
 using Galileo.Properties;
+using GalileoDriver;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
 using NLog;
@@ -35,6 +36,9 @@ namespace Galileo
                 host.Open();
 
                 logger.Info("Service setarted.");
+
+                var driver = new Driver();
+                driver.Initialize();
 
                 logger.Info("Press enter for exit");
                 Console.Read();
