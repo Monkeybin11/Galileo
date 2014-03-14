@@ -3,6 +3,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using GalileoDriver;
+using GalileoDriver.RaspberryPi2;
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
 using NLog;
@@ -37,6 +38,17 @@ namespace GalileoDriver
             log.Info("Strat Galileo Driver initialization");
             log.Debug("ConfigFile - {0}", configFileName);
             log.Debug("ConfigSection - {0}.", configSection);
+
+
+            log.Info("I2C test");
+            int address = 0x2a;
+            I2CBus bus = I2CBus.Open(@"/dev/i2c-0");
+            bus.WriteByte(address, 1);
+            bus.WriteBytes(address, new byte[]{1,2,3});
+            bus.WriteCommand(address, 5, 10);
+
+
+
 
             try
             {
