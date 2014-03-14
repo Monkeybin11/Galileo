@@ -42,13 +42,10 @@ namespace GalileoDriver
 
             log.Info("I2C test");
             int address = 0x2a;
-            I2CBus bus = I2CBus.Open(@"/dev/i2c-0");
+            I2CBus bus = I2CBus.Open(@"/dev/i2c-1");
             bus.WriteByte(address, 1);
             bus.WriteBytes(address, new byte[]{1,2,3});
-            bus.WriteCommand(address, 5, 10);
-
-
-
+            
 
             try
             {

@@ -111,56 +111,7 @@ namespace GalileoDriver.RaspberryPi2
                 if (res == -2)
                     throw new IOException(String.Format("Error writing to address '{0}': I2C transaction failed", address));
             }
-
-
-            /// <summary>
-            /// Writes command with data.
-            /// </summary>
-            /// <param name="address"></param>
-            /// <param name="command"></param>
-            /// <param name="data"></param>
-            public void WriteCommand(int address, byte command, byte data)
-            {
-                var bytes = new byte[2];
-                bytes[0] = command;
-                bytes[1] = data;
-                WriteBytes(address, bytes);
-            }
-
-
-            /// <summary>
-            /// Writes command with data.
-            /// </summary>
-            /// <param name="address"></param>
-            /// <param name="command"></param>
-            /// <param name="data1"></param>
-            /// <param name="data2"></param>
-            public void WriteCommand(int address, byte command, byte data1, byte data2)
-            {
-                var bytes = new byte[3];
-                bytes[0] = command;
-                bytes[1] = data1;
-                bytes[2] = data2;
-                WriteBytes(address, bytes);
-            }
-
-
-            /// <summary>
-            /// Writes command with data.
-            /// </summary>
-            /// <param name="address"></param>
-            /// <param name="command"></param>
-            /// <param name="data"></param>
-            public void WriteCommand(int address, byte command, ushort data)
-            {
-                var bytes = new byte[3];
-                bytes[0] = command;
-                bytes[1] = (byte)(data & 0xff);
-                bytes[2] = (byte)(data >> 8);
-                WriteBytes(address, bytes);
-            }
-
-
+        
             /// <summary>
             /// Reads bytes from device with passed address.
             /// </summary>
