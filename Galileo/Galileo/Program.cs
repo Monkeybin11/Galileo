@@ -16,7 +16,7 @@ namespace Galileo
         public static void Main()
         {
             logger.Info("========================================================================================");
-            logger.Info("==========================     Starting Curiosity service  =============================");
+            logger.Info("==========================     Starting  Galileo  Service  =============================");
             logger.Info("========================================================================================");
             ServiceHost host = null;
             var exceptionOccured = false;
