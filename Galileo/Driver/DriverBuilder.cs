@@ -5,45 +5,43 @@ using NLog;
 namespace GalileoDriver
 {
     /// <summary>
-    /// Create Device according to the xml configuration
+    /// Create Driver according to the xml configuration
     /// </summary>
-    internal abstract class DeviceBuilder
+    internal abstract class DriverBuilder
     {
         /// <summary>
-        /// Factory method for device creation and initialization
+        /// Factory method for driver creation and initialization
         /// </summary>
         /// <param name="configuration">XML donfiguration of device</param>
         /// <returns>Described Device in the XML of null</returns>
-        public static Device CreateDevice(XElement configuration)
+        public static Driver CreateDriver(XElement configuration)
         {
             var log = LogManager.GetCurrentClassLogger();
             if (configuration == null)
             {
-                log.Error("Null device configuration section.");
+                log.Error("Null driver configuration section.");
                 return null;
             }
             var name = configuration.Name.LocalName;
 
-            DeviceName deviceName;
+            DriverType type;
 
-            if (!Enum.TryParse(name, true, out deviceName))
+            if (!Enum.TryParse(name, true, out type))
             {
                 log.Error("Can't parse configuration of {0}", name);
                 return null;
             }
 
-            Device result;
+            Driver result;
 
-            switch (deviceName)
+            switch (type)
             {
-                case DeviceName.RaspberryPi2:
-                    result = new RaspberryPi2.RaspberryPi2();
+                case DriverType.Transmission:
+                    result = new Transmission(configuration);
                     break;
-                case DeviceName.ArduinoMicro:
-                    result = new ArduinoMicro.ArduinoMicro();
-                    break;
+                
                 default:
-                    log.Error("{0} initialization not implemented.", deviceName);
+                    log.Error("{0} initialization not implemented.", type);
                     return null;
                     break;
             }

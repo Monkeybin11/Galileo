@@ -9,12 +9,12 @@ namespace Galileo.Connection
     public class Galileo : IGalileo, IDisposable
     {
         private readonly Logger log = LogManager.GetCurrentClassLogger();
-        private readonly Driver driver = new Driver();
+        private readonly GalileoDriver.GalileoDriver galileoDriver = new GalileoDriver.GalileoDriver();
  
         public bool Start()
         {
             log.Info("Start method invoked");
-            driver.Initialize();
+            galileoDriver.Initialize();
             return true;
         }
 
@@ -50,7 +50,7 @@ namespace Galileo.Connection
         {
             if (disposing)
             {
-                driver.Dispose();
+                galileoDriver.Dispose();
             }
             GC.SuppressFinalize(this);
         }

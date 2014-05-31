@@ -1,101 +1,19 @@
-using System;
-using System.Threading;
-using System.Linq;
-using System.Xml;
+﻿using System;
 using System.Xml.Linq;
-using GalileoDriver;
-using GalileoDriver.RaspberryPi2;
-using Microsoft.Practices.ObjectBuilder2;
-using Microsoft.Practices.Unity;
 using NLog;
 
 namespace GalileoDriver
 {
-    // ToDo: Extract Driver configuration
-    public class Driver : IDisposable
+    public abstract class Driver : IDisposable
     {
-        private UnityContainer container = new UnityContainer();
-        private const string DriverConfigurationElement = @"DriverConfigurations";
-        private const string ConfigurationElement = @"Configuration";
-        private const string NameAttribute = @"name";
+        protected Logger log = LogManager.GetCurrentClassLogger();
+        public string Name { get; protected set; }
+        public Version Version { get; private set; }
+        public bool IsEnable { get; protected set; }
 
-        private const string defaultConfigFileName = @"DriverConfiguration.xml";
-        private const string defaultConfigSectionName = @"Main";
+        internal abstract void Initialize(XElement configuration);
 
-        private readonly Logger log = LogManager.GetCurrentClassLogger();
-
-        public void Initialize()
-        {
-            Initialize("");
-        }
-
-        public void Initialize(string configSection) 
-        {
-            Initialize(defaultConfigFileName, configSection);
-        }
-
-        public void Initialize(string configFileName, string configSection)
-        {
-            log.Info("Strat Galileo Driver initialization");
-            log.Debug("ConfigFile - {0}", configFileName);
-            log.Debug("ConfigSection - {0}.", configSection);
-
-
-            log.Info("I2C test");
-            int address = 0x2a;
-            I2CBus bus = I2CBus.Open(@"/dev/i2c-1");
-	    log.Info("Opened");
-	    Thread.Sleep(10);
-	    log.Info("1");
-            bus.WriteByte(address, 1);
-	    Thread.Sleep(10);
-	    log.Info("2");
-            bus.WriteBytes(address, new byte[]{1,2,3});
-	    Thread.Sleep(10);
-            log.Info("3");
-
-            try
-            {
-                XDocument xDoc = XDocument.Load(configFileName);
-                XElement configuration;
-                var configElements = xDoc.Root.Elements(ConfigurationElement);
-
-                if (!configElements.Any())
-                {
-                    log.Error("Driver Configurations not found");
-                }
-
-                if (string.IsNullOrEmpty(configSection))
-                {
-                    configSection = defaultConfigSectionName;
-                }
-
-                if (configElements.Any(c => c.Name.LocalName == configSection))
-                {
-                    configuration = configElements.First(c => c.Name.LocalName == configSection);
-                }
-                else
-                {
-                    log.Info("Default configuration will be loaded");
-                    configuration = configElements.First();
-                }
-
-                if (configuration.Element(DeviceConstant.DevicesE) != null)
-                {
-                    foreach (var deviceConfig in configuration.Element(DeviceConstant.DevicesE).Elements())
-                    {
-                        var device = DeviceBuilder.CreateDevice(deviceConfig);
-                        container.RegisterInstance<Device>(device.Name, device);
-                    }
-                }
-            }
-            catch (XmlException e)
-            {
-                log.Error("Can't parse xml configuration.", e);
-            }
-
-            log.Info("Galileo Driver initialized");
-        }
+        #region IDisposal
 
         public void Dispose()
         {
@@ -106,12 +24,10 @@ namespace GalileoDriver
         {
             if (disposing)
             {
-                var items = container.ResolveAll<Device>();
-                items.ForEach(i=>i.Dispose());
+                IsEnable = false;
             }
             GC.SuppressFinalize(this);
         }
-
-
+        #endregion
     }
 }
