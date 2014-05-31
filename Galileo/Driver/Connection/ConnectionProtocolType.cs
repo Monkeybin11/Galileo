@@ -3,6 +3,6 @@
     public enum ConnectionProtocolType
     {
         I2C,
-        PWM
+        Usb
     }
 }
