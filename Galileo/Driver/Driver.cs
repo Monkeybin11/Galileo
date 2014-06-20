@@ -4,14 +4,20 @@ using NLog;
 
 namespace GalileoDriver
 {
-    public abstract class Driver : IDisposable
+    public class Driver : IDisposable
     {
         protected Logger log = LogManager.GetCurrentClassLogger();
-        public string Name { get; protected set; }
-        public Version Version { get; private set; }
-        public bool IsEnable { get; protected set; }
 
-        internal abstract void Initialize(XElement configuration);
+        public string Name { get; protected set; }
+
+        public Version Version { get; private set; }
+
+        public bool IsEnable { get; protected set; }
+        
+        internal virtual void Initialize(XElement configuration)
+        {
+            throw new NotImplementedException("Derived class does not have implementation");
+        }
 
         #region IDisposal
 

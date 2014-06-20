@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
@@ -10,25 +9,34 @@ using NLog;
 
 namespace GalileoDriver
 {
+    using Microsoft.Practices.Unity.Configuration;
+
     public class GalileoDriver : IDisposable
     {
-        private readonly UnityContainer container = new UnityContainer();
-
         private const string ConfigurationElement = @"Configuration";
         private const string NameAttribute = @"name";
-        private const string defaultConfigFileName = @"DriverConfiguration.xml";
-        private const string defaultConfigSectionName = @"Main";
+        private const string DefaultConfigFileName = @"DriverConfiguration.xml";
+        private const string DefaultConfigSectionName = @"Main";
+
+        private readonly UnityContainer container;
 
         private readonly Logger log = LogManager.GetCurrentClassLogger();
 
+        public GalileoDriver()
+        {
+            container = new UnityContainer();
+            container.LoadConfiguration();
+            this.Initialize();
+        }
+
         public void Initialize()
         {
-            Initialize(defaultConfigFileName, defaultConfigSectionName);
+            Initialize(DefaultConfigFileName, DefaultConfigSectionName);
         }
 
         public void Initialize(string configSection)
         {
-            Initialize(defaultConfigFileName, configSection);
+            Initialize(DefaultConfigFileName, configSection);
         }
 
         public void Initialize(string configFileName, string configSection)
@@ -37,18 +45,18 @@ namespace GalileoDriver
             log.Debug("ConfigFile - {0}", configFileName);
             log.Debug("ConfigSection - {0}.", configSection);
             
-//            log.Info("I2C test");
-//            int address = 0x2a;
-//            I2CBus bus = I2CBus.Open(@"/dev/i2c-1");
-//            log.Info("Opened");
-//            Thread.Sleep(10);
-//            log.Info("1");
-//            bus.WriteByte(address, 1);
-//            Thread.Sleep(10);
-//            log.Info("2");
-//            bus.WriteBytes(address, new byte[] { 1, 2, 3 });
-//            Thread.Sleep(10);
-//            log.Info("3");
+            // log.Info("I2C test");
+            // int address = 0x2a;
+            // I2CBus bus = I2CBus.Open(@"/dev/i2c-1");
+            // log.Info("Opened");
+            // Thread.Sleep(10);
+            // log.Info("1");
+            // bus.WriteByte(address, 1);
+            // Thread.Sleep(10);
+            // log.Info("2");
+            // bus.WriteBytes(address, new byte[] { 1, 2, 3 });
+            // Thread.Sleep(10);
+            // log.Info("3");
 
             if (!ReadConfiguration(configFileName, configSection))
             {
@@ -62,8 +70,8 @@ namespace GalileoDriver
         {
             try
             {
-                XDocument xDoc = XDocument.Load(configFileName);
-                XElement configuration;
+                var xDoc = XDocument.Load(configFileName);
+
                 var configElements = xDoc.Root.Elements(ConfigurationElement);
 
                 if (!configElements.Any())
@@ -74,11 +82,11 @@ namespace GalileoDriver
 
                 if (string.IsNullOrEmpty(configSection))
                 {
-                    configSection = defaultConfigSectionName;
+                    configSection = DefaultConfigSectionName;
                 }
 
-                configuration = configElements.SingleOrDefault(e => e.Attribute(NameAttribute) != null &&
-                                                                               e.Attribute(NameAttribute).Value == configSection);
+                XElement configuration = configElements.SingleOrDefault(e => e.Attribute(NameAttribute) != null &&
+                                                                             e.Attribute(NameAttribute).Value == configSection);
                 
                 if(configuration == default(XElement))
                 {
@@ -86,14 +94,8 @@ namespace GalileoDriver
                     configuration = configElements.First();
                 }
 
-                if (configuration.Element(DriverConfigurationConstant.DriversElementName) != null)
-                {
-                    foreach (var driverElement in configuration.Element(DriverConfigurationConstant.DriversElementName).Elements())
-                    {
-                        var drivers = DriverBuilder.CreateDriver(driverElement);
-                        container.RegisterInstance<Driver>(drivers.Name, drivers);
-                    }
-                }
+                InitializeConnections(configuration);
+                InitializeDevices(configuration);
             }
             catch (XmlException e)
             {
@@ -101,6 +103,47 @@ namespace GalileoDriver
                 return false;
             }
             return true;
+        }
+
+        private bool InitializeConnections(XElement configuration)
+        {
+            if (configuration.Element(DriverConfigurationConstant.ConnectionSectionName) == null)
+            {
+                return false;
+            }
+//            throw new NotImplementedException("Connection setting parser not implemnted");
+            return true;
+        }
+
+        private void InitializeDevices(XElement configuration)
+        {
+            if (configuration.Element(DriverConfigurationConstant.DriversElementName) == null)
+            {
+                return;
+            }
+
+            foreach (var driverElement in configuration.Element(DriverConfigurationConstant.DriversElementName).Elements())
+            {
+                var driver = CreateDriver(driverElement);
+                this.container.RegisterInstance<Driver>(driver.Name, driver);
+            }
+        }
+
+        private Driver CreateDriver(XElement configuration)
+        {
+            var log = LogManager.GetCurrentClassLogger();
+            if (configuration == null)
+            {
+                log.Error("Null driver configuration section.");
+                return null;
+            }
+
+            var name = configuration.Name.LocalName;
+
+            var result = (Driver)container.Resolve(typeof(Driver), "HEllo");
+            var a = result is Transmission;
+            result.Initialize(configuration);
+            return result;
         }
 
         #region IDisposable

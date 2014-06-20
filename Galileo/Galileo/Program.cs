@@ -1,59 +1,68 @@
 ﻿using System;
 using System.ServiceModel;
+using System.ServiceModel.Description;
+
 using Galileo.Connection;
+
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
+
 using NLog;
 
 namespace Galileo
 {
-    class Program
+    internal class Program
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+        #region Static Fields
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        #endregion
+
+        #region Public Methods and Operators
+
         public static void Main()
         {
-            logger.Info("========================================================================================");
-            logger.Info("==========================     Starting  Galileo  Service  =============================");
-            logger.Info("========================================================================================");
-            ServiceHost host = null;
-            var exceptionOccured = false;
+            Logger.Info("========================================================================================");
+            Logger.Info("==========================     Starting  Galileo  Service  =============================");
+            Logger.Info("========================================================================================");
+            bool exceptionOccured = false;
             try
             {
                 var container = new UnityContainer();
                 container.LoadConfiguration();
-                
-                host = new ServiceHost(container.Resolve<IGalileo>());
-                logger.Info("Service configured on {0} endpoints", host.Description.Endpoints.Count);
-                foreach (var endpoint in host.Description.Endpoints)
+
+                ServiceHost host = new ServiceHost(container.Resolve<IGalileo>());
+                Logger.Info("Service configured on {0} endpoints", host.Description.Endpoints.Count);
+                foreach (ServiceEndpoint endpoint in host.Description.Endpoints)
                 {
-                    logger.Info(endpoint.Address);
+                    Logger.Info(endpoint.Address);
                 }
-                logger.Info("Starting service host");
+
+                Logger.Info("Starting service host");
 
                 host.Open();
 
-                logger.Info("Service started.");
+                Logger.Info("Service started.");
 
-                var driver = new GalileoDriver.GalileoDriver();
-                driver.Initialize();
-
-                logger.Info("Press enter for exit");
+                Logger.Info("Press enter for exit");
                 Console.Read();
             }
             catch (Exception e)
             {
-                logger.Error("Exeption in the service {0}", e);
+                Logger.Error("Exeption in the service {0}", e);
                 exceptionOccured = true;
             }
             finally
             {
                 if (exceptionOccured)
                 {
-                    logger.Info("Press enter for exit");
+                    Logger.Info("Press enter for exit");
                     Console.Read();
                 }
             }
         }
+
+        #endregion
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ServiceModel;
-using GalileoDriver;
 using NLog;
 
 namespace Galileo.Connection
@@ -9,8 +8,9 @@ namespace Galileo.Connection
     public class Galileo : IGalileo, IDisposable
     {
         private readonly Logger log = LogManager.GetCurrentClassLogger();
+
         private readonly GalileoDriver.GalileoDriver galileoDriver = new GalileoDriver.GalileoDriver();
- 
+
         public bool Start()
         {
             log.Info("Start method invoked");

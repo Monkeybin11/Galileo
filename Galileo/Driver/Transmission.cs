@@ -2,16 +2,16 @@
 
 namespace GalileoDriver
 {
-    internal class Transmission : Driver
+    public class Transmission : Driver
     {
-        public Transmission(XElement configuration)
+        public Transmission()
         {
-            throw new System.NotImplementedException();
+            log.Error("Transmission constructor not implemented.");
         }
 
         internal override void Initialize(XElement configuration)
         {
-            
+            log.Trace("Transmission driver initialization");
         }
     }
 }

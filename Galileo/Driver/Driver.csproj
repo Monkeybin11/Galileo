@@ -49,6 +49,7 @@
       <HintPath>..\..\3rdParties\NLog\NLog.Extended.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -60,8 +61,6 @@
     <Compile Include="Connection\ConnectionProtocolType.cs" />
     <Compile Include="Connection\IConnection.cs" />
     <Compile Include="Driver.cs" />
-    <Compile Include="DriverBuilder.cs" />
-    <Compile Include="DriverType.cs" />
     <Compile Include="Exceptions\InvalidDriverConfiguration.cs" />
     <Compile Include="GalileoDriver.cs" />
     <Compile Include="Connection\I2CConnection.cs" />

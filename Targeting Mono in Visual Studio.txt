@@ -6,6 +6,7 @@ Install Mono for Windows, from http://www.go-mono.com/mono-downloads/download.ht
 Choose a decent path, which for me was C:\Program Files (x86)\Mono-2.10.9
 Load an elevated administrative Command Prompt (Top tip: On Windows 8, hit WinKey+X then choose “Command Prompt (Admin)“)
 From this Command Prompt, execute the following commands (in order):
+
 $ cd "C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\Profile"
 $ mklink /d Mono "C:\Program Files (x86)\Mono-2.10.9\lib\mono\4.0"
 $ cd Mono
@@ -19,12 +20,17 @@ Now paste in this text and Save the file:
 </FileList>
 From the same Command Prompt, type:
 $ regedit
-In the Registry Editor, navigate to: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\.NETFramework\v4.0.30319\SKUs\ and create a new Key folder called .NETFramework,Version=v4.0,Profile=Mono
-Now navigate to HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\.NETFramework\v4.0.30319\SKUs\ and create the same Key folder again here (this step is only necessary for x64 machines, but since all software developers use those then you’ll probably need to do it!)
+In the Registry Editor, navigate to: 
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\.NETFramework\v4.0.30319\SKUs\ 
+and create a new Key folder called .NETFramework,Version=v4.0,Profile=Mono
+Now navigate to HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\.NETFramework\v4.0.30319\SKUs\ 
+and create the same Key folder again here (this step is only necessary for x64 machines, but since 
+all software developers use those then you’ll probably need to do it!)
 Now load up VS2012 and a project. Goto the Project Properties (Alt+Enter whilst having it selected on Solution Explorer) .
 Choose the Application tab on the left and look for the “Target framework” drop-down list.
 On this list you should see an entry called “Mono 2.10.9 Profile”.
-Select it, and Visual Studio should then convert your project to target the Mono framework. You’ll notice that it will re-reference all your various System assemblies and if you study the filenames they will point to the Mono ones that were created during Step #3.
+Select it, and Visual Studio should then convert your project to target the Mono framework. You’ll notice that it will 
+re-reference all your various System assemblies and if you study the filenames they will point to the Mono ones that were created during Step #3.
 Note: I was scratching my head at first as I kept getting an error from Visual Studio saying:
 
 This application requires one of the following versions of the .NET Framework:
