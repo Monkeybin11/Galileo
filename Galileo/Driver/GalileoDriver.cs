@@ -140,7 +140,7 @@ namespace GalileoDriver
 
             var name = configuration.Name.LocalName;
 
-            var result = (Driver)container.Resolve(typeof(Driver), "HEllo");
+            var result = (Driver)container.Resolve(typeof(Driver), name);
             var a = result is Transmission;
             result.Initialize(configuration);
             return result;

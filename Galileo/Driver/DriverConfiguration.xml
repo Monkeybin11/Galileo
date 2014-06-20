@@ -16,6 +16,11 @@
           <Vhile name="BackRight"/>
         </Vhiles>
       </Transmission>
+      
+      <CameraNavigator version="1.0" name="CameraNavigator">
+        <Connection name="I2cConnectionBus" port ="40"/>
+      </CameraNavigator>
+      
     </Drivers>
   </Configuration>
 </DriverConfigurations>
