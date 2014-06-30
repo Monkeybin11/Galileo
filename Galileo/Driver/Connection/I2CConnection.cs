@@ -2,6 +2,8 @@
 
 namespace GalileoDriver
 {
+    using System.Xml.Linq;
+
     /// <summary>
     /// I2C connection protocol
     /// </summary>
@@ -24,18 +26,9 @@ namespace GalileoDriver
         /// </summary>
         public int Address { get; private set; }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="sda">number of sda connector</param>
-        /// <param name="scl">number of scl connector</param>
-        /// <param name="address">device address</param>
-        public I2CConnection(int sda, int scl, int address)
+        public I2CConnection()
         {
-            log.Trace("Constructing I2C [SDA={0}, SLC={1}, Address={2}]", sda, scl, address);
-            Sda = sda;
-            Scl = scl;
-            Address = address;
+            
         }
 
         /// <summary>
@@ -45,6 +38,15 @@ namespace GalileoDriver
         public override string ToString()
         {
             return string.Format("I2C [SDA={0}, SLC={1}, Address={2}]", Sda, Scl, Address);
+        }
+
+        public void Initialize(XElement configuration)
+        {
+            log.Warn("Method not implemented");
+            //            log.Trace("Constructing I2C [SDA={0}, SLC={1}, Address={2}]", sda, scl, address);
+            //            Sda = sda;
+            //            Scl = scl;
+            //            Address = address;
         }
 
         /// <summary>

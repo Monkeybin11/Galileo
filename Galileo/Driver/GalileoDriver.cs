@@ -87,15 +87,16 @@ namespace GalileoDriver
 
                 XElement configuration = configElements.SingleOrDefault(e => e.Attribute(NameAttribute) != null &&
                                                                              e.Attribute(NameAttribute).Value == configSection);
-                
-                if(configuration == default(XElement))
+
+                if (configuration == default(XElement))
                 {
                     log.Info("Can't find configuration with name - '{0}'. First configuration will be loaded", configSection);
                     configuration = configElements.First();
                 }
 
-                InitializeConnections(configuration);
-                InitializeDevices(configuration);
+                InitializeConfiguredItems(configuration, DriverConfigurationConstant.DriversElementName, typeof(Driver));
+                InitializeConfiguredItems(configuration, DriverConfigurationConstant.ConnectionSectionName, typeof(I2CBus));
+
             }
             catch (XmlException e)
             {
@@ -105,47 +106,30 @@ namespace GalileoDriver
             return true;
         }
 
-        private bool InitializeConnections(XElement configuration)
+        private void InitializeConfiguredItems(XElement configuration, string collectionName, Type itemType)
         {
-            if (configuration.Element(DriverConfigurationConstant.ConnectionSectionName) == null)
-            {
-                return false;
-            }
-//            throw new NotImplementedException("Connection setting parser not implemnted");
-            return true;
-        }
-
-        private void InitializeDevices(XElement configuration)
-        {
-            if (configuration.Element(DriverConfigurationConstant.DriversElementName) == null)
+            if (configuration.Element(collectionName) == null)
             {
                 return;
             }
 
-            foreach (var driverElement in configuration.Element(DriverConfigurationConstant.DriversElementName).Elements())
+            foreach (var element in configuration.Element(collectionName).Elements())
             {
-                var driver = CreateDriver(driverElement);
-                this.container.RegisterInstance<Driver>(driver.Name, driver);
+                var itemName = element.Attribute(NameAttribute);
+
+                var name = itemName != null ? itemName.Value : element.Name.LocalName;
+
+                log.Info("Start resolving '{0}' driver", name);
+                if (string.IsNullOrEmpty(name))
+                {
+                    log.Error("Driver name not retrived. \n{0}", element.ToString());
+                }
+                
+                var result = (IConfigured)container.Resolve(itemType, name);
+                result.Initialize(element);
             }
         }
-
-        private Driver CreateDriver(XElement configuration)
-        {
-            var log = LogManager.GetCurrentClassLogger();
-            if (configuration == null)
-            {
-                log.Error("Null driver configuration section.");
-                return null;
-            }
-
-            var name = configuration.Name.LocalName;
-
-            var result = (Driver)container.Resolve(typeof(Driver), name);
-            var a = result is Transmission;
-            result.Initialize(configuration);
-            return result;
-        }
-
+        
         #region IDisposable
         public void Dispose()
         {

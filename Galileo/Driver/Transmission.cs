@@ -6,10 +6,10 @@ namespace GalileoDriver
     {
         public Transmission()
         {
-            log.Error("Transmission constructor not implemented.");
+            log.Warn("Transmission constructor not implemented.");
         }
 
-        internal override void Initialize(XElement configuration)
+        public override void Initialize(XElement configuration)
         {
             log.Trace("Transmission driver initialization");
         }

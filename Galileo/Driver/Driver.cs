@@ -4,7 +4,7 @@ using NLog;
 
 namespace GalileoDriver
 {
-    public class Driver : IDisposable
+    public class Driver : IConfigured, IDisposable
     {
         protected Logger log = LogManager.GetCurrentClassLogger();
 
@@ -13,8 +13,8 @@ namespace GalileoDriver
         public Version Version { get; private set; }
 
         public bool IsEnable { get; protected set; }
-        
-        internal virtual void Initialize(XElement configuration)
+
+        public virtual void Initialize(XElement configuration)
         {
             throw new NotImplementedException("Derived class does not have implementation");
         }
@@ -34,6 +34,7 @@ namespace GalileoDriver
             }
             GC.SuppressFinalize(this);
         }
+
         #endregion
     }
 }

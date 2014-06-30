@@ -3,12 +3,12 @@
   <Configuration name="Main">
     
     <Connections>
-      <Connection type="I2C" name="I2cConnectionBus"/>
+<!--      <Connection type="I2C" name="I2C_1" address="/dev/i2c-1"/>-->
     </Connections>
     
     <Drivers>
       <Transmission version="1.0" name="Transmission">
-        <Connection name="I2cConnectionBus" port ="42"/>
+        <Connection name="I2C_1" port ="42"/>
         <Vhiles>
           <Vhile name="FrontLeft" />
           <Vhile name="FrontRight" />

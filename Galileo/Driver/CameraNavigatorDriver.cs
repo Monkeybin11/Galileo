@@ -9,7 +9,7 @@
             log.Info("Camera motion driver");
         }
 
-        internal override void Initialize(XElement configuration)
+        public override void Initialize(XElement configuration)
         {
             log.Info("Initialization");
         }

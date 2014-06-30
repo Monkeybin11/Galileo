@@ -1,11 +1,12 @@
 ﻿namespace GalileoDriver
 {
     /// <summary>
-    /// Describe connection protocol
+    /// Describe connection protocol.
     /// </summary>
-    internal interface IConnection
+    internal interface IConnection : IConfigured
     {
         bool IsConnected { get; }
+
         ConnectionProtocolType ConnectionProtocol { get; }
     }
 }
