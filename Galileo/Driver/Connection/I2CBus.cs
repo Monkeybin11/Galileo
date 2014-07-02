@@ -26,7 +26,7 @@ namespace GalileoDriver
         public static extern int WriteBytes(int busHandle, int addr, byte[] buf, int len);
     }
 
-    internal class I2CBus : IConfigured, IDisposable
+    internal class I2CBus : II2CBus
     {
         public I2CBus()
         {
@@ -39,7 +39,7 @@ namespace GalileoDriver
         /// .ctor
         /// </summary>
         /// <param name="busPath"></param>
-        private void Open(string busPath)
+        public void Open(string busPath)
         {
             int res = I2CNativeLib.OpenBus(busPath);
             if (res < 0)

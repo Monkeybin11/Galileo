@@ -60,7 +60,9 @@
   <ItemGroup>
     <Compile Include="CameraNavigatorDriver.cs" />
     <Compile Include="Connection\ConnectionProtocolType.cs" />
+    <Compile Include="Connection\I2CBusMock.cs" />
     <Compile Include="Connection\IConnection.cs" />
+    <Compile Include="Connection\II2CBus.cs" />
     <Compile Include="Driver.cs" />
     <Compile Include="Exceptions\InvalidDriverConfiguration.cs" />
     <Compile Include="GalileoDriver.cs" />

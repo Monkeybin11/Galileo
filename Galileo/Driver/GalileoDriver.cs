@@ -95,7 +95,7 @@ namespace GalileoDriver
                 }
 
                 InitializeConfiguredItems(configuration, DriverConfigurationConstant.DriversElementName, typeof(Driver));
-                InitializeConfiguredItems(configuration, DriverConfigurationConstant.ConnectionSectionName, typeof(I2CBus));
+                InitializeConfiguredItems(configuration, DriverConfigurationConstant.ConnectionSectionName, typeof(II2CBus));
 
             }
             catch (XmlException e)

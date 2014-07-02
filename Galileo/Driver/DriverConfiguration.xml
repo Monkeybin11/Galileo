@@ -3,7 +3,7 @@
   <Configuration name="Main">
     
     <Connections>
-<!--      <Connection type="I2C" name="I2C_1" address="/dev/i2c-1"/>-->
+      <Connection type="I2C" name="I2C_1" address="/dev/i2c-1"/>
     </Connections>
     
     <Drivers>
