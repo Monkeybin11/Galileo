@@ -4,6 +4,8 @@ using NLog;
 
 namespace GalileoDriver
 {
+    using Microsoft.Practices.Unity;
+
     public class Driver : IConfigured, IDisposable
     {
         protected Logger log = LogManager.GetCurrentClassLogger();
@@ -14,7 +16,7 @@ namespace GalileoDriver
 
         public bool IsEnable { get; protected set; }
 
-        public virtual void Initialize(XElement configuration)
+        public virtual void Initialize(XElement configuration, UnityContainer container)
         {
             throw new NotImplementedException("Derived class does not have implementation");
         }

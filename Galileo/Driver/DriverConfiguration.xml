@@ -7,7 +7,7 @@
     </Connections>
     
     <Drivers>
-      <Transmission version="1.0" name="Transmission">
+      <Transmission version="1.0.0.0" name="Transmission">
         <Connection name="I2C_1" port ="42"/>
         <Vhiles>
           <Vhile name="FrontLeft" />

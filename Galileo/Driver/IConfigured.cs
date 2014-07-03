@@ -1,11 +1,11 @@
 ﻿using System.Xml.Linq;
 
 namespace GalileoDriver
-{
-    using System.Deployment.Internal;
+{   
+    using Microsoft.Practices.Unity;
 
     internal interface IConfigured
     {
-        void Initialize(XElement configuration);
+        void Initialize(XElement configuration, UnityContainer container);
     }
 }

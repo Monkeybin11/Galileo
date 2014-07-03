@@ -9,6 +9,8 @@ namespace GalileoDriver
 {
     using System.Xml.Linq;
 
+    using Microsoft.Practices.Unity;
+
     using NLog.Layouts;
 
     internal static class I2CNativeLib
@@ -41,6 +43,7 @@ namespace GalileoDriver
         /// <param name="busPath"></param>
         public void Open(string busPath)
         {
+            BusPath = busPath;
             int res = I2CNativeLib.OpenBus(busPath);
             if (res < 0)
                 throw new IOException(
@@ -52,7 +55,9 @@ namespace GalileoDriver
             busHandle = res;
         }
 
-        public void Initialize(XElement configuration)
+        public string BusPath { get; private set; }
+
+        public void Initialize(XElement configuration, UnityContainer container)
         {
             if (configuration == null)
             {
@@ -72,16 +77,12 @@ namespace GalileoDriver
             Dispose(false);
         }
 
-
-
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
-
-
+        
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

@@ -1,47 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GalileoDriver
+﻿namespace GalileoDriver
 {
     using System.Xml.Linq;
+
+    using Microsoft.Practices.Unity;
 
     using NLog;
 
     internal class I2CBusMock : II2CBus
     {
-        protected Logger log = LogManager.GetCurrentClassLogger();
+        private readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public void Initialize(XElement configuration)
+        public string BusPath { get; private set; }
+
+        public void Initialize(XElement configuration, UnityContainer container)
         {
             log.Info("Initalize Mock I2C Bus");
+            BusPath = string.Empty;
         }
 
         public void Dispose()
-        {
-            
+        {   
         }
 
         public void Open(string busPath)
         {
-            log.Info("Open I2C Bus");
+            log.Info("Open I2C Bus {0}", busPath);
+            BusPath = busPath;
         }
 
         public void Finalyze()
         {
-            
         }
 
         public void WriteByte(int address, byte b)
         {
-            log.Trace("Write one byte '{0}' to address {1}", b, address);
+            log.Trace("Write one byte '{0}' to address {1}, ButhPath {2}", b, address, BusPath);
         }
 
         public void WriteBytes(int address, byte[] bytes)
         {
-            log.Trace("Write {0} bytes to address {1}", bytes.Length, address);
+            log.Trace("Write {0} bytes to address {1}, Bus path {2}", bytes.Length, address, BusPath);
         }
 
         public byte[] ReadBytes(int address, int count)

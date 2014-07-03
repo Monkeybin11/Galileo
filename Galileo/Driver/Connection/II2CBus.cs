@@ -10,6 +10,11 @@
         /// <param name="busPath"></param>
         void Open(string busPath);
 
+        /// <summary>
+        /// Bus path ot the device;.
+        /// </summary>
+        string BusPath { get; }
+
         void Finalyze();
 
         /// <summary>

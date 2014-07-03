@@ -2,70 +2,23 @@
 
 namespace GalileoDriver
 {
-    using System.Xml.Linq;
-
     /// <summary>
-    /// I2C connection protocol
+    /// I2C connection protocol.
     /// </summary>
-    public class I2CConnection : IConnection
+    internal class I2CConnection 
     {
         private readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        /// <summary>
-        /// Number of SDA connector
-        /// </summary>
-        public int Sda { get; private set; }
+        private readonly II2CBus bus;
 
-        /// <summary>
-        /// Number of SCL connector
-        /// </summary>
-        public int Scl { get; private set; }
+        private readonly byte port;
 
-        /// <summary>
-        /// Device Address
-        /// </summary>
-        public int Address { get; private set; }
-
-        public I2CConnection()
+        public I2CConnection(II2CBus bus, byte port)
         {
-            
+            this.bus = bus;
+            this.port = port;
         }
 
-        /// <summary>
-        /// Return short description of connection
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return string.Format("I2C [SDA={0}, SLC={1}, Address={2}]", Sda, Scl, Address);
-        }
-
-        public void Initialize(XElement configuration)
-        {
-            log.Warn("Method not implemented");
-            //            log.Trace("Constructing I2C [SDA={0}, SLC={1}, Address={2}]", sda, scl, address);
-            //            Sda = sda;
-            //            Scl = scl;
-            //            Address = address;
-        }
-
-        /// <summary>
-        /// Send bytes
-        /// </summary>
-        /// <param name="data">Bytes array</param>
-        public void Send(byte[] data)
-        {
-            if (data == null)
-            {
-                log.Error("Null data for sending via {0}", this);
-                return;
-            }
-            log.Trace("I2C sending {0} bytes", data.Length);
-        }
-
-        /// <summary>
-        /// Return connection state
-        /// </summary>
         public bool IsConnected
         {
             get
@@ -73,6 +26,22 @@ namespace GalileoDriver
                 log.Error("Not implemented.");
                 return false;
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("I2C [Bus = {0}, Port = {1}]", bus.BusPath, port);
+        }
+
+        public void Send(byte[] data)
+        {
+            if (data == null)
+            {
+                log.Error("Null data for sending via {0}", this);
+                return;
+            }
+
+            log.Trace("I2C sending {0} bytes", data.Length);
         }
 
         public ConnectionProtocolType ConnectionProtocol

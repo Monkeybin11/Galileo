@@ -126,7 +126,7 @@ namespace GalileoDriver
                 }
                 
                 var result = (IConfigured)container.Resolve(itemType, name);
-                result.Initialize(element);
+                result.Initialize(element, container);
             }
         }
         
