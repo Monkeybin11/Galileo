@@ -17,7 +17,7 @@ namespace GalileoDriver
         private const string NameAttribute = @"name";
         private const string DefaultConfigFileName = @"DriverConfiguration.xml";
         private const string DefaultConfigSectionName = @"Main";
-
+        
         private readonly UnityContainer container;
 
         private readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -65,6 +65,35 @@ namespace GalileoDriver
 
             log.Info("Galileo Driver initialized");
         }
+
+        public void Move(float linearSpeed, float angularSpeed)
+        {
+            var transmission = (Transmission)container.Resolve<Driver>("Transmission");
+            if (transmission == null)
+            {
+                log.Error("Transmission not resolved");
+                return;
+            }
+
+            transmission.Move(linearSpeed, angularSpeed);
+        }
+
+        #region IDisposable
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                var items = container.ResolveAll<Driver>();
+                items.ForEach(i => i.Dispose());
+            }
+            GC.SuppressFinalize(this);
+        }
+        #endregion
 
         private bool ReadConfiguration(string configFileName, string configSection)
         {
@@ -124,27 +153,10 @@ namespace GalileoDriver
                 {
                     log.Error("Driver name not retrived. \n{0}", element.ToString());
                 }
-                
+
                 var result = (IConfigured)container.Resolve(itemType, name);
                 result.Initialize(element, container);
             }
         }
-        
-        #region IDisposable
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                var items = container.ResolveAll<Driver>();
-                items.ForEach(i => i.Dispose());
-            }
-            GC.SuppressFinalize(this);
-        }
-        #endregion
     }
 }

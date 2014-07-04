@@ -40,6 +40,9 @@ namespace GalileoDriver
                 log.Error("Null data for sending via {0}", this);
                 return;
             }
+            
+            bus.WriteBytes(port, data);
+            var result = bus.ReadBytes(port, 2);
 
             log.Trace("I2C sending {0} bytes", data.Length);
         }

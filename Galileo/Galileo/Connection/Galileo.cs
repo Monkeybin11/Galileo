@@ -18,6 +18,11 @@ namespace Galileo.Connection
             return true;
         }
 
+        public void Move()
+        {
+            galileoDriver.Move(0, 0);
+        }
+
         public bool Stop(bool immeadeatly)
         {
             log.Info("Stop method invoked");

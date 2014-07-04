@@ -10,9 +10,21 @@ namespace GalileoDriver
     {
         protected Logger log = LogManager.GetCurrentClassLogger();
 
+        protected Version version;
+
         public string Name { get; protected set; }
 
-        public Version Version { get; private set; }
+        public Version Version
+        {
+            get
+            {
+                return this.version;
+            }
+            protected set
+            {
+                this.version = value;
+            }
+        }
 
         public bool IsEnable { get; protected set; }
 

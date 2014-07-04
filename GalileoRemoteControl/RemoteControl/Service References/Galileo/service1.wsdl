@@ -30,6 +30,12 @@
   <wsdl:message name="IGalileo_Restart_OutputMessage">
     <wsdl:part name="parameters" element="tns:RestartResponse" />
   </wsdl:message>
+  <wsdl:message name="IGalileo_ApplyFirmware_InputMessage">
+    <wsdl:part name="parameters" element="tns:ApplyFirmware" />
+  </wsdl:message>
+  <wsdl:message name="IGalileo_ApplyFirmware_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ApplyFirmwareResponse" />
+  </wsdl:message>
   <wsdl:portType name="IGalileo">
     <wsdl:operation name="Start">
       <wsdl:input wsaw:Action="http://tempuri.org/IGalileo/Start" message="tns:IGalileo_Start_InputMessage" />
@@ -46,6 +52,10 @@
     <wsdl:operation name="Restart">
       <wsdl:input wsaw:Action="http://tempuri.org/IGalileo/Restart" message="tns:IGalileo_Restart_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IGalileo/RestartResponse" message="tns:IGalileo_Restart_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ApplyFirmware">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGalileo/ApplyFirmware" message="tns:IGalileo_ApplyFirmware_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGalileo/ApplyFirmwareResponse" message="tns:IGalileo_ApplyFirmware_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="GalileoEndpoint" type="tns:IGalileo">
@@ -86,10 +96,19 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="ApplyFirmware">
+      <soap:operation soapAction="http://tempuri.org/IGalileo/ApplyFirmware" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="Galileo">
     <wsdl:port name="GalileoEndpoint" binding="tns:GalileoEndpoint">
-      <soap:address location="http://192.168.1.2:10000/" />
+      <soap:address location="http://localhot:10000/" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

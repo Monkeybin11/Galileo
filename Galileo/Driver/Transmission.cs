@@ -1,11 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Linq;
+using Microsoft.Practices.Unity;
 
 namespace GalileoDriver
 {
-    using Microsoft.Practices.Unity;
-
     public class Transmission : Driver
     {
         private const string VersionAttributeName = "version";
@@ -14,7 +13,14 @@ namespace GalileoDriver
         private const string ConnectionPortAttributeName = @"port";
         
         private I2CConnection connection;
-        private Version version;
+
+        private bool IsConnected
+        {
+            get
+            {
+                return connection.IsConnected;
+            }
+        }
         
         public override void Initialize(XElement configuration, UnityContainer container)
         {
@@ -28,8 +34,8 @@ namespace GalileoDriver
 
             if (versionAttribute == null && !Version.TryParse(versionAttribute.Value, out version))
             {
-                version = new Version(0, 0, 0, 0);
-                log.Warn("Can't loas Transmsission version. Default {0} was be set", version);
+                Version = new Version(0, 0, 0, 0);
+                log.Warn("Can't loas Transmsission version. Default {0} was be set", Version);
             }
 
             var connectionElement = configuration.Element(ConnectionElementName);
@@ -51,5 +57,26 @@ namespace GalileoDriver
                 connection = new I2CConnection(bus, port);
             }
         }
+
+        public void Move(float lineSpeed, float angularSpeed)
+        {
+            if (IsConnected)
+            {
+                connection.Send(new byte[1] { 1 });
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                connection = null;
+                Version = null;
+            }
+
+            GC.SuppressFinalize(this);
+        }
+
+
     }
 }

@@ -7,50 +7,87 @@ Notes
 pwmPin: Digital pin to set motor speed
 dirPin: Digital pin to set motor direction
 currPin: Analog pin to monitor current usage 
-encA: Digital pin for encoder A, should be interrupt pin
-encB: Digital pin for encoder B
 *************************************************************************************/
-/*Dagu4Motor* motor1;
-Dagu4Motor* motor2;
-Dagu4Motor* motor3;
-Dagu4Motor* motor4;*/
+// define slave address (0x2A = 42)
+#define SLAVE_ADDRESS 0x2A
 
-void setup()
-{  
-  // define slave address (0x2A = 42)
-  #define SLAVE_ADDRESS 0x2A
-  // initialize i2c as slave
-  Wire.begin(SLAVE_ADDRESS);
-   
-  // define callbacks for i2c communication
-  Wire.onReceive(receiveData);
-  Wire.onRequest(sendData); 
-  
-  Serial.begin(9600);
-  Serial.println("Initialized");
-/*  motor1 = new Dagu4Motor(4, 5, 14);
-  motor2 = new Dagu4Motor(6, 12, 14);
-  motor3 = new Dagu4Motor(8, 9, 14);
-  motor4 = new Dagu4Motor(10, 11, 14);
-  
-  motor1->begin();
-  motor2->begin();
-  motor3->begin();
-  motor4->begin();  
-  */
-  pinMode(13, OUTPUT);
-  
-  Serial.println("Initialized");
-}
+// Front - Right
+#define FrontRightPwmPin 4
+#define FrontRightDirPin 5
+#define FrontRightCurPin 14
 
-bool blinking = false;
+//Front - Left
+#define FrontLeftPwmPin 6
+#define FrontLeftDirPin 12
+#define FrontLeftCurPin 14
+
+// Back - Right
+#define BackRightPwmPin 8
+#define BackRightDirPin 9
+#define BackRightCurPin 14
+
+// Back - Left
+#define BackLeftPwmPin 10
+#define BackLeftDirPin 11
+#define BackLeftCurPin 14
+
+Dagu4Motor* frontRight;
+Dagu4Motor* frontLeft;
+Dagu4Motor* backRight;
+Dagu4Motor* backLeft;
+
 bool receivingData = false;
 int* message;
 int messageLength = 0;
+int received = 0;
 bool processed = true;
 
+//======================================= S E T U P ===============================================
+void setup(){ 
+        delay(2000);
+	Serial.begin(9600);
+	InitializeI2C();
+	InitializeMotors();
+  
+	pinMode(13, OUTPUT); //?????????????????/  	
+}
+
+void InitializeI2C(){
+  Wire.begin(SLAVE_ADDRESS);     
+  Wire.onReceive(OnReceiveData);  
+  Wire.onRequest(OnRequestData);
+  Serial.println("I2C Initialized");
+}
+
+void InitializeMotors(){	
+	Serial.println("Motors initialization");
+	
+	String space = ", ";  
+	String vhileName = "Front-Right ";
+	frontRight =   new Dagu4Motor(FrontRightPwmPin,  FrontRightDirPin, FrontRightCurPin);
+	Serial.println(vhileName + FrontRightPwmPin + space + FrontRightDirPin + space + FrontRightCurPin);
+	
+	vhileName = "Front-Left ";
+	frontLeft =   new Dagu4Motor(FrontLeftPwmPin,   FrontLeftDirPin,  FrontLeftCurPin);
+	Serial.println(vhileName + FrontLeftPwmPin + space + FrontLeftDirPin + space + FrontLeftCurPin);
+	
+	vhileName = "Back-Right ";
+	backRight  =   new Dagu4Motor(BackRightPwmPin, BackRightDirPin,  BackRightCurPin);
+	Serial.println(vhileName + BackRightPwmPin + space + BackRightDirPin + space + BackRightCurPin);
+	
+	vhileName = "Back-Left ";
+	backLeft   =   new Dagu4Motor(BackLeftPwmPin,    BackLeftDirPin,   BackLeftCurPin);
+	Serial.println(vhileName + BackLeftPwmPin + space + BackLeftDirPin + space + BackLeftCurPin);
+	
+	frontRight->begin();
+	frontLeft->begin();
+	backRight->begin();
+	backLeft->begin();
+	Serial.println("Motors initialized.");
+}
+
 // callback for received data
-void receiveData(int byteCount) 
+void OnReceiveData(int byteCount) 
 { 
   receivingData = true;    
   free(message);
@@ -61,19 +98,22 @@ void receiveData(int byteCount)
   
   message = (int*)calloc(byteCount, sizeof(int));
   messageLength = byteCount;
-  int i  = 0;
+  int received = 0;
   while(Wire.available())
   {
-    message[i] = Wire.read();    
-    digitalWrite(13, HIGH); delay(200); digitalWrite(13, LOW);    
-    i++;
+    message[received] = Wire.read();    
+    digitalWrite(13, HIGH); 
+    delay(200); 
+    digitalWrite(13, LOW);    
+    received++;
   }    
   processed = false;
   receivingData = false;
 }
 
-// callback for sending data
-void sendData() { Serial.println("Send data");}
+void OnRequestData(){
+	 Wire.write(received - 1);
+}
 
 bool direction = false;
 
@@ -83,7 +123,7 @@ void loop()
   if(receivingData)
   {
     Serial.println("Data not received");
-    delay(100);
+    delay(10);
     return;
   }
   
@@ -93,42 +133,34 @@ void loop()
     {
       Serial.print(message[i]);
     }
-    Serial.println(".");    
+    Serial.println(".");
     processed = true;
   }
-    
-  if(blinking)
-  { 
-    pinMode(13, OUTPUT);
-    digitalWrite(13, HIGH);
   
-    delay(1000);
-    digitalWrite(13, LOW);
-    delay(1000);
-  } 
   /*direction = !direction;
   Serial.println("New Loop");
   
-  motor1->stopMotors();   
-  motor2->stopMotors();   
-  motor3->stopMotors();   
-  motor4->stopMotors();   
+  motor1->stopMotors();
+  motor2->stopMotors();
+  motor3->stopMotors();
+  motor4->stopMotors();
         
-  motor1->setMotorDirection(direction);  
-  motor2->setMotorDirection(direction);    
-  motor3->setMotorDirection(direction);    
-  motor4->setMotorDirection(direction);    
+  motor1->setMotorDirection(direction);
+  motor2->setMotorDirection(direction);
+  motor3->setMotorDirection(direction);
+  motor4->setMotorDirection(direction);
   
   for(int i=0; i<255; i++){
-    motor1->setSpeed(150); 
-    motor2->setSpeed(150);     
-    motor3->setSpeed(150); 
-    motor4->setSpeed(150);     
+    motor1->setSpeed(150);
+    motor2->setSpeed(150);
+    motor3->setSpeed(150);
+    motor4->setSpeed(150);
     delay(30);
   }
-  motor1->stopMotors(); 
-  motor2->stopMotors();   
-  motor3->stopMotors();   
-  motor4->stopMotors(); 
+  motor1->stopMotors();
+  motor2->stopMotors();
+  motor3->stopMotors();
+  motor4->stopMotors();
   */
 }
+

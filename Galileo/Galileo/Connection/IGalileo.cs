@@ -16,6 +16,9 @@ namespace Galileo.Connection
         [OperationContract]
         bool Start();
 
+        [OperationContract]
+        void Move();
+
         /// <summary>
         /// Stop all systems
         /// </summary>

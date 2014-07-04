@@ -3,6 +3,8 @@ using RemoteControl.Galileo;
 
 namespace RemoteControl
 {
+    using System;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -15,12 +17,20 @@ namespace RemoteControl
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            GalileoClient client = new GalileoClient("GalileoEndpoint", HostTextBox.Text);
-            client.Open();
-            StateTextBlock.Text = client.State.ToString();
-            if (client.Start())
+
+            try
             {
-                StateTextBlock.Text = "Ok";
+                GalileoClient client = new GalileoClient("GalileoEndpoint", HostTextBox.Text);
+                client.Open();
+                StateTextBlock.Text = client.State.ToString();
+                if (client.Start())
+                {
+                    StateTextBlock.Text = "Ok";
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
             }
         }
     }
