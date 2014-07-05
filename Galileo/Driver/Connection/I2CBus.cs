@@ -3,16 +3,14 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Mono.Unix;
 using Mono.Unix.Native;
+using System.Xml.Linq;
+using Microsoft.Practices.Unity;
+using NLog;
+
 
 
 namespace GalileoDriver
 {
-    using System.Xml.Linq;
-
-    using Microsoft.Practices.Unity;
-
-    using NLog.Layouts;
-
     internal static class I2CNativeLib
     {
         [DllImport("libnativei2c.so", EntryPoint = "openBus", SetLastError = true)]
@@ -30,111 +28,64 @@ namespace GalileoDriver
 
     internal class I2CBus : II2CBus
     {
-        public I2CBus()
-        {
-
-        }
-
+        private readonly Logger log = LogManager.GetCurrentClassLogger();
         private int busHandle;
-
-        /// <summary>
-        /// .ctor
-        /// </summary>
-        /// <param name="busPath"></param>
-        public void Open(string busPath)
-        {
-            BusPath = busPath;
-            int res = I2CNativeLib.OpenBus(busPath);
-            if (res < 0)
-                throw new IOException(
-                    String.Format(
-                        "Error opening bus '{0}': {1}",
-                        busPath,
-                        UnixMarshal.GetErrorDescription(Stdlib.GetLastError())));
-
-            busHandle = res;
-        }
 
         public string BusPath { get; private set; }
 
         public void Initialize(XElement configuration, UnityContainer container)
         {
+            log.Trace("I2CBus initialization.");
             if (configuration == null)
             {
-               throw new NullReferenceException();
+                log.Error("Invalid configuration.");
+                throw new NullReferenceException();
             }
+
             var addressAttribute = configuration.Attribute("address");
             if (addressAttribute == null)
             {
-               throw new InvalidDataException();
+                log.Error("Can't parse address configuration");
+                throw new InvalidDataException();
             }
-
-            Open(addressAttribute.Value);
+            BusPath = addressAttribute.Value;
+            log.Trace("I2C address = {0}", BusPath);
+            Open(BusPath);
         }
 
-        public void Finalyze()
+        public void Open(string busPath)
         {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
+            BusPath = busPath;
+            int res = I2CNativeLib.OpenBus(busPath);
+            if (res < 0)
             {
-                // disposing managed resouces
+                throw new IOException( String.Format("Error opening bus '{0}': {1}", busPath, UnixMarshal.GetErrorDescription(Stdlib.GetLastError())));
             }
 
-            if (busHandle != 0)
-            {
-                I2CNativeLib.CloseBus(busHandle);
-                busHandle = 0;
-            }
+            busHandle = res;
         }
 
-
-        /// <summary>
-        /// Writes single byte.
-        /// </summary>
-        /// <param name="address">Address of a destination device</param>
-        /// <param name="b"></param>
         public void WriteByte(int address, byte b)
         {
             var bytes = new byte[1];
             bytes[0] = b;
             WriteBytes(address, bytes);
         }
-
-
-        /// <summary>
-        /// Writes array of bytes.
-        /// </summary>
-        /// <remarks>Do not write more than 3 bytes at once, RPi drivers don't support this currently.</remarks>
-        /// <param name="address">Address of a destination device</param>
-        /// <param name="bytes"></param>
+        
         public void WriteBytes(int address, byte[] bytes)
         {
             var res = I2CNativeLib.WriteBytes(busHandle, address, bytes, bytes.Length);
             if (res == -1)
-                throw new IOException(
-                    String.Format(
-                        "Error accessing address '{0}': {1}",
-                        address,
-                        UnixMarshal.GetErrorDescription(Stdlib.GetLastError())));
-            if (res == -2) throw new IOException(String.Format("Error writing to address '{0}': I2C transaction failed", address));
+            {
+                throw new IOException( String.Format( "Error accessing address '{0}': {1}", address, UnixMarshal.GetErrorDescription(Stdlib.GetLastError())));
+            }
+
+            if (res == -2)
+            {
+                throw new IOException(String.Format("Error writing to address '{0}': I2C transaction failed", address));
+            }
         }
 
-        /// <summary>
-        /// Reads bytes from device with passed address.
-        /// </summary>
-        /// <param name="address"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
         public byte[] ReadBytes(int address, int count)
         {
             var buf = new byte[count];
@@ -154,5 +105,24 @@ namespace GalileoDriver
             return buf;
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // disposing managed resouces
+            }
+
+            if (busHandle != 0)
+            {
+                I2CNativeLib.CloseBus(busHandle);
+                busHandle = 0;
+            }
+        }
     }
-} ;
+} 

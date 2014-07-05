@@ -45,19 +45,6 @@ namespace GalileoDriver
             log.Debug("ConfigFile - {0}", configFileName);
             log.Debug("ConfigSection - {0}.", configSection);
             
-            // log.Info("I2C test");
-            // int address = 0x2a;
-            // I2CBus bus = I2CBus.Open(@"/dev/i2c-1");
-            // log.Info("Opened");
-            // Thread.Sleep(10);
-            // log.Info("1");
-            // bus.WriteByte(address, 1);
-            // Thread.Sleep(10);
-            // log.Info("2");
-            // bus.WriteBytes(address, new byte[] { 1, 2, 3 });
-            // Thread.Sleep(10);
-            // log.Info("3");
-
             if (!ReadConfiguration(configFileName, configSection))
             {
                 throw new InvalidDriverConfiguration("Can't load driver configurations. Application should be stopped.");
@@ -123,8 +110,8 @@ namespace GalileoDriver
                     configuration = configElements.First();
                 }
 
-                InitializeConfiguredItems(configuration, DriverConfigurationConstant.DriversElementName, typeof(Driver));
                 InitializeConfiguredItems(configuration, DriverConfigurationConstant.ConnectionSectionName, typeof(II2CBus));
+                InitializeConfiguredItems(configuration, DriverConfigurationConstant.DriversElementName, typeof(Driver));
 
             }
             catch (XmlException e)

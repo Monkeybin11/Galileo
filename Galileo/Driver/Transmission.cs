@@ -54,6 +54,7 @@ namespace GalileoDriver
                 }
 
                 var bus = container.Resolve<II2CBus>(connectionName);
+                
                 connection = new I2CConnection(bus, port);
             }
         }

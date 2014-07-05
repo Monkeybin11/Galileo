@@ -24,7 +24,7 @@ namespace GalileoDriver
             get
             {
                 log.Error("Not implemented.");
-                return false;
+                return true;
             }
         }
 
