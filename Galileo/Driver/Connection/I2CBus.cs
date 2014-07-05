@@ -77,12 +77,20 @@ namespace GalileoDriver
             var res = I2CNativeLib.WriteBytes(busHandle, address, bytes, bytes.Length);
             if (res == -1)
             {
-                throw new IOException( String.Format( "Error accessing address '{0}': {1}", address, UnixMarshal.GetErrorDescription(Stdlib.GetLastError())));
+                string message = String.Format(
+                    "Error accessing address '{0}': {1}",
+                    address,
+                    UnixMarshal.GetErrorDescription(Stdlib.GetLastError()));
+
+                log.Error(message);
+                throw new IOException(message);
             }
 
             if (res == -2)
             {
-                throw new IOException(String.Format("Error writing to address '{0}': I2C transaction failed", address));
+                var message = String.Format("Error writing to address '{0}': I2C transaction failed", address);
+                log.Error(message);
+                throw new IOException(message);
             }
         }
 
@@ -91,16 +99,26 @@ namespace GalileoDriver
             var buf = new byte[count];
             var res = I2CNativeLib.ReadBytes(busHandle, address, buf, buf.Length);
             if (res == -1)
-                throw new IOException(
-                    String.Format(
-                        "Error accessing address '{0}': {1}",
-                        address,
-                        UnixMarshal.GetErrorDescription(Stdlib.GetLastError())));
-            if (res <= 0)
-                throw new IOException(
-                    String.Format("Error reading from address '{0}': I2C transaction failed", address));
+            {
+                var message = String.Format(
+                    "Error accessing address '{0}': {1}",
+                    address,
+                    UnixMarshal.GetErrorDescription(Stdlib.GetLastError()));
+                log.Error(message);
+                throw new IOException(message);
+            }
 
-            if (res < count) Array.Resize(ref buf, res);
+            if (res <= 0)
+            {
+                var message = String.Format("Error reading from address '{0}': I2C transaction failed", address);
+                log.Error(message);
+                throw new IOException(message);
+            }
+
+            if (res < count)
+            {
+                Array.Resize(ref buf, res);
+            }
 
             return buf;
         }

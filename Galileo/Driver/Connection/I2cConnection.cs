@@ -23,7 +23,6 @@ namespace GalileoDriver
         {
             get
             {
-                log.Error("Not implemented.");
                 return true;
             }
         }
@@ -42,7 +41,7 @@ namespace GalileoDriver
             }
             
             bus.WriteBytes(port, data);
-            var result = bus.ReadBytes(port, 2);
+//            var result = bus.ReadBytes(port, 2);
 
             log.Trace("I2C sending {0} bytes", data.Length);
         }
