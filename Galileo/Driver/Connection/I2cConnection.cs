@@ -43,9 +43,6 @@ namespace GalileoDriver
             
             bus.WriteBytes(port, data);
             log.Trace("I2C sending {0} bytes", data.Length);
-	    Thread.Sleep(100);
-            var result = bus.ReadBytes(port, 1);
-	    log.Trace("Received {0}", result[0]);
         }
 
         public ConnectionProtocolType ConnectionProtocol

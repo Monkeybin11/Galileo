@@ -12,6 +12,12 @@
   <wsdl:message name="IGalileo_Start_OutputMessage">
     <wsdl:part name="parameters" element="tns:StartResponse" />
   </wsdl:message>
+  <wsdl:message name="IGalileo_Move_InputMessage">
+    <wsdl:part name="parameters" element="tns:Move" />
+  </wsdl:message>
+  <wsdl:message name="IGalileo_Move_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MoveResponse" />
+  </wsdl:message>
   <wsdl:message name="IGalileo_Stop_InputMessage">
     <wsdl:part name="parameters" element="tns:Stop" />
   </wsdl:message>
@@ -41,6 +47,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IGalileo/Start" message="tns:IGalileo_Start_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IGalileo/StartResponse" message="tns:IGalileo_Start_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="Move">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGalileo/Move" message="tns:IGalileo_Move_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGalileo/MoveResponse" message="tns:IGalileo_Move_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="Stop">
       <wsdl:input wsaw:Action="http://tempuri.org/IGalileo/Stop" message="tns:IGalileo_Stop_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IGalileo/StopResponse" message="tns:IGalileo_Stop_OutputMessage" />
@@ -62,6 +72,15 @@
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="Start">
       <soap:operation soapAction="http://tempuri.org/IGalileo/Start" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Move">
+      <soap:operation soapAction="http://tempuri.org/IGalileo/Move" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -108,7 +127,7 @@
   </wsdl:binding>
   <wsdl:service name="Galileo">
     <wsdl:port name="GalileoEndpoint" binding="tns:GalileoEndpoint">
-      <soap:address location="http://localhot:10000/" />
+      <soap:address location="http://localhost:10000/" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

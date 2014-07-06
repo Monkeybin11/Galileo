@@ -63,13 +63,16 @@ namespace GalileoDriver
         {
             log.Trace("Move line speed: {0}, angulat speed: {1}", lineSpeed, angularSpeed);
             if (IsConnected)
-            {	
-                connection.Send(new byte[15] { 15, 2, 
-0,1,200,
-1,1,200,
-2,1,200,
-3,1,200,
-200 });
+            {
+                connection.Send(new byte[] 
+                { 
+                    15, 2, 
+                    0, 1, (byte)Math.Round(lineSpeed), 
+                    1, 1, (byte)Math.Round(lineSpeed), 
+                    2, 1, (byte)Math.Round(lineSpeed), 
+                    3, 1, (byte)Math.Round(lineSpeed), 
+                    200 
+                });
             }
         }
 

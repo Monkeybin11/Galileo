@@ -15,12 +15,13 @@ namespace RemoteControl
             InitializeComponent();
         }
 
+        private GalileoClient client;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
             try
             {
-                GalileoClient client = new GalileoClient("GalileoEndpoint", HostTextBox.Text);
+                client = new GalileoClient("GalileoEndpoint", HostTextBox.Text);
                 client.Open();
                 StateTextBlock.Text = client.State.ToString();
                 if (client.Start())
@@ -32,6 +33,22 @@ namespace RemoteControl
             {
                 Console.WriteLine(exception);
             }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int speed = int.Parse(SpeedTextBox.Text);
+                client.Move(speed, 0);
+                SpeedTextBox.Text = (speed + 1).ToString();
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+             
         }
     }
 }

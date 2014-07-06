@@ -17,7 +17,7 @@ namespace Galileo.Connection
         bool Start();
 
         [OperationContract]
-        void Move();
+        void Move(float linearSpeed, float angularSpeed);
 
         /// <summary>
         /// Stop all systems

@@ -18,9 +18,9 @@ namespace Galileo.Connection
             return true;
         }
 
-        public void Move()
+        public void Move(float linearSpeed, float angularSpeed)
         {
-            galileoDriver.Move(0, 0);
+            galileoDriver.Move(linearSpeed, angularSpeed);
         }
 
         public bool Stop(bool immeadeatly)

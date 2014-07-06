@@ -21,6 +21,12 @@ namespace RemoteControl.Galileo {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGalileo/Start", ReplyAction="http://tempuri.org/IGalileo/StartResponse")]
         System.Threading.Tasks.Task<bool> StartAsync();
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGalileo/Move", ReplyAction="http://tempuri.org/IGalileo/MoveResponse")]
+        void Move(float linearSpeed, float angularSpeed);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGalileo/Move", ReplyAction="http://tempuri.org/IGalileo/MoveResponse")]
+        System.Threading.Tasks.Task MoveAsync(float linearSpeed, float angularSpeed);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGalileo/Stop", ReplyAction="http://tempuri.org/IGalileo/StopResponse")]
         bool Stop(bool immeadeatly);
         
@@ -79,6 +85,14 @@ namespace RemoteControl.Galileo {
         
         public System.Threading.Tasks.Task<bool> StartAsync() {
             return base.Channel.StartAsync();
+        }
+        
+        public void Move(float linearSpeed, float angularSpeed) {
+            base.Channel.Move(linearSpeed, angularSpeed);
+        }
+        
+        public System.Threading.Tasks.Task MoveAsync(float linearSpeed, float angularSpeed) {
+            return base.Channel.MoveAsync(linearSpeed, angularSpeed);
         }
         
         public bool Stop(bool immeadeatly) {

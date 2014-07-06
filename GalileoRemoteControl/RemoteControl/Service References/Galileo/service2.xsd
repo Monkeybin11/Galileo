@@ -12,6 +12,19 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="Move">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="linearSpeed" type="xs:float" />
+        <xs:element minOccurs="0" name="angularSpeed" type="xs:float" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MoveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
   <xs:element name="Stop">
     <xs:complexType>
       <xs:sequence>
