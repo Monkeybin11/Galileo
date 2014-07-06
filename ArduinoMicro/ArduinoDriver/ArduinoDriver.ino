@@ -15,8 +15,8 @@ currPin: Analog pin to monitor current usage
 #define NewConfiguration 4
 
 struct MotorData{
-	byte MotorId;
-	byte Direction;
+	byte MotorId ;
+	byte Direction ;
 	byte Speed;
 };
 
@@ -24,10 +24,27 @@ struct Message{
 public:
   bool InProcessing;
   byte messageType;  
-  MotorData* Motors;
+  MotorData* Motors;  
 public:  
   Message(){
+    InProcessing = true;
+    
     Motors = new MotorData[4]();
+    Motors[0].MotorId = 0;
+    Motors[0].Direction = 0;
+    Motors[0].Speed = 0;
+
+    Motors[1].MotorId = 1;
+    Motors[1].Direction = 0;
+    Motors[1].Speed = 0;
+
+    Motors[2].MotorId = 2;
+    Motors[2].Direction = 0;
+    Motors[2].Speed = 0;
+
+    Motors[3].MotorId = 3;
+    Motors[3].Direction = 0;
+    Motors[3].Speed = 0;
   }
 };
 
@@ -54,10 +71,7 @@ public:
 #define BackLeftDirPin 11
 #define BackLeftCurPin 14
 
-Dagu4Motor* frontRight;
-Dagu4Motor* frontLeft;
-Dagu4Motor* backRight;
-Dagu4Motor* backLeft;
+Dagu4Motor* motors;
 
 String space = ", ";  
 bool receivingData = false;
@@ -73,7 +87,7 @@ void setup(){
 	Serial.begin(9600);
 	InitializeI2C();
 	InitializeMotors();    
-	pinMode(13, OUTPUT);
+//	pinMode(13, OUTPUT);
 }
 
 void InitializeI2C(){
@@ -86,26 +100,31 @@ void InitializeI2C(){
 void InitializeMotors(){	
 	Serial.println("Motors initialization");	
 	
+      Dagu4Motor motors[4] = {
+          Dagu4Motor(FrontRightPwmPin,  FrontRightDirPin, FrontRightCurPin),
+          Dagu4Motor(FrontLeftPwmPin,   FrontLeftDirPin,  FrontLeftCurPin),
+          Dagu4Motor(BackRightPwmPin, BackRightDirPin,  BackRightCurPin),
+          Dagu4Motor(BackLeftPwmPin,    BackLeftDirPin,   BackLeftCurPin) };
+	
 	String vhileName = "Front-Right ";
-	frontRight =   new Dagu4Motor(FrontRightPwmPin,  FrontRightDirPin, FrontRightCurPin);
 	Serial.println(vhileName + FrontRightPwmPin + space + FrontRightDirPin + space + FrontRightCurPin);
 	
 	vhileName = "Front-Left ";
-	frontLeft =   new Dagu4Motor(FrontLeftPwmPin,   FrontLeftDirPin,  FrontLeftCurPin);
 	Serial.println(vhileName + FrontLeftPwmPin + space + FrontLeftDirPin + space + FrontLeftCurPin);
 	
 	vhileName = "Back-Right ";
-	backRight  =   new Dagu4Motor(BackRightPwmPin, BackRightDirPin,  BackRightCurPin);
 	Serial.println(vhileName + BackRightPwmPin + space + BackRightDirPin + space + BackRightCurPin);
 	
 	vhileName = "Back-Left ";
-	backLeft   =   new Dagu4Motor(BackLeftPwmPin,    BackLeftDirPin,   BackLeftCurPin);
 	Serial.println(vhileName + BackLeftPwmPin + space + BackLeftDirPin + space + BackLeftCurPin);
 	
-	frontRight->begin();
-	frontLeft->begin();
-	backRight->begin();
-	backLeft->begin();
+	for(int i = 0; i<4; i++){
+	  motors[i].begin();
+          motors[i].setSpeed(1);
+          motors[i].setMotorDirection(1);
+//          motors[i].stopMotors();
+          delay(100);
+	}	
 	Serial.println("Motors initialized.");
 }
 
@@ -211,34 +230,23 @@ void loop()
   // Verify are all data received;
   if(receivingData)
   {
-    Serial.println("Wait for data");
-    delay(10);
     return;
   }
   
   ProcessMessage();
-  
-/*  Serial.println("New Loop");
-  
-  motor1->stopMotors();
-  motor2->stopMotors();
-  motor3->stopMotors();
-  motor4->stopMotors();
-        
-  motor1->setMotorDirection(direction);
-  motor2->setMotorDirection(direction);
-  motor3->setMotorDirection(direction);
-  motor4->setMotorDirection(direction);
-  
-  for(int i=0; i<255; i++){
-    motor1->setSpeed(150);
-    motor2->setSpeed(150);
-    motor3->setSpeed(150);
-    motor4->setSpeed(150);
-    delay(30);
+
+  if(!message.InProcessing){
+      Serial.println("SetSpeed");
+	  for (int i = 0; i < 4; i++){
+//		motors[i].setMotorDirection(message.Motors[i].Direction);
+//		motors[i].setSpeed(message.Motors[i].Speed);
+		motors[i].setMotorDirection(1);
+		motors[i].setSpeed(50);
+	  }
   }
-  motor1->stopMotors();
-  motor2->stopMotors();
-  motor3->stopMotors();
-  motor4->stopMotors();  */
+  
+   Serial.println(motors[0].getSpeed() + space + motors[1].getSpeed() + space + motors[2].getSpeed() + space  + motors[3].getSpeed());  
+  
+  delay(1000);
+
 }
