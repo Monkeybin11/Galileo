@@ -1,3 +1,5 @@
+//Blue - scl
+
 #include <Wire.h>
 #include <Dagu4Motor.h>
 /*************************************************************************************
@@ -52,26 +54,29 @@ public:
 #define SLAVE_ADDRESS 0x2A
 
 // Front - Right
-#define FrontRightPwmPin 4
-#define FrontRightDirPin 5
-#define FrontRightCurPin 14
+#define FrontRightPwmPin 5
+#define FrontRightDirPin 4
+#define FrontRightCurPin 18
 
 //Front - Left
 #define FrontLeftPwmPin 6
-#define FrontLeftDirPin 12
-#define FrontLeftCurPin 14
+#define FrontLeftDirPin 7
+#define FrontLeftCurPin 19
 
 // Back - Right
-#define BackRightPwmPin 8
-#define BackRightDirPin 9
-#define BackRightCurPin 14
+#define BackRightPwmPin 9
+#define BackRightDirPin 20
+#define BackRightCurPin 8
 
 // Back - Left
 #define BackLeftPwmPin 10
-#define BackLeftDirPin 11
-#define BackLeftCurPin 14
+#define BackLeftDirPin 16
+#define BackLeftCurPin 21
 
-Dagu4Motor* motors;
+Dagu4Motor* frontRight;
+Dagu4Motor* frontLeft;
+Dagu4Motor* backRight;
+Dagu4Motor* backLeft;
 
 String space = ", ";  
 bool receivingData = false;
@@ -83,11 +88,10 @@ Message message;
 
 //======================================= S E T U P ===============================================
 void setup(){ 
-    delay(2000);
-	Serial.begin(9600);
-	InitializeI2C();
-	InitializeMotors();    
-//	pinMode(13, OUTPUT);
+  delay(2000);
+  Serial.begin(9600);
+  InitializeI2C();
+  InitializeMotors();    
 }
 
 void InitializeI2C(){
@@ -99,32 +103,34 @@ void InitializeI2C(){
 
 void InitializeMotors(){	
 	Serial.println("Motors initialization");	
-	
-      Dagu4Motor motors[4] = {
-          Dagu4Motor(FrontRightPwmPin,  FrontRightDirPin, FrontRightCurPin),
-          Dagu4Motor(FrontLeftPwmPin,   FrontLeftDirPin,  FrontLeftCurPin),
-          Dagu4Motor(BackRightPwmPin, BackRightDirPin,  BackRightCurPin),
-          Dagu4Motor(BackLeftPwmPin,    BackLeftDirPin,   BackLeftCurPin) };
+
+      frontRight = new Dagu4Motor(FrontRightPwmPin,  FrontRightDirPin, FrontRightCurPin);
+      frontLeft = new Dagu4Motor(FrontLeftPwmPin,   FrontLeftDirPin,  FrontLeftCurPin);
+      backRight = new Dagu4Motor(BackRightPwmPin, BackRightDirPin,  BackRightCurPin);
+      backLeft = new Dagu4Motor(BackLeftPwmPin,    BackLeftDirPin,   BackLeftCurPin);
+
 	
 	String vhileName = "Front-Right ";
-	Serial.println(vhileName + FrontRightPwmPin + space + FrontRightDirPin + space + FrontRightCurPin);
-	
+	Serial.println(vhileName + FrontRightPwmPin + space + FrontRightDirPin + space + FrontRightCurPin);	
 	vhileName = "Front-Left ";
-	Serial.println(vhileName + FrontLeftPwmPin + space + FrontLeftDirPin + space + FrontLeftCurPin);
-	
+	Serial.println(vhileName + FrontLeftPwmPin + space + FrontLeftDirPin + space + FrontLeftCurPin);	
 	vhileName = "Back-Right ";
-	Serial.println(vhileName + BackRightPwmPin + space + BackRightDirPin + space + BackRightCurPin);
-	
+	Serial.println(vhileName + BackRightPwmPin + space + BackRightDirPin + space + BackRightCurPin);	
 	vhileName = "Back-Left ";
 	Serial.println(vhileName + BackLeftPwmPin + space + BackLeftDirPin + space + BackLeftCurPin);
 	
-	for(int i = 0; i<4; i++){
-	  motors[i].begin();
-          motors[i].setSpeed(1);
-          motors[i].setMotorDirection(1);
-//          motors[i].stopMotors();
-          delay(100);
-	}	
+	frontRight->begin();
+	frontRight->stopMotors();
+	
+	frontLeft->begin(); 
+	frontLeft->stopMotors(); 
+	
+	backRight->begin(); 
+	backRight->stopMotors(); 
+	
+	backLeft->begin(); 
+	backLeft->stopMotors(); 
+	
 	Serial.println("Motors initialized.");
 }
 
@@ -156,8 +162,6 @@ void OnReceiveData(int byteCount)
 void OnRequestData(){
   Wire.write(message.messageType);
 }
-
-bool direction = false;
 
 void ParseNewMotorState(){
 	Serial.println("Parsing motors state");
@@ -228,25 +232,28 @@ void ProcessMessage(){
 void loop()
 {  
   // Verify are all data received;
-  if(receivingData)
-  {
-    return;
-  }
+	if(receivingData) return;
   
-  ProcessMessage();
+	ProcessMessage();
 
   if(!message.InProcessing){
       Serial.println("SetSpeed");
-	  for (int i = 0; i < 4; i++){
-//		motors[i].setMotorDirection(message.Motors[i].Direction);
-//		motors[i].setSpeed(message.Motors[i].Speed);
-		motors[i].setMotorDirection(1);
-		motors[i].setSpeed(50);
-	  }
-  }
-  
-   Serial.println(motors[0].getSpeed() + space + motors[1].getSpeed() + space + motors[2].getSpeed() + space  + motors[3].getSpeed());  
-  
-  delay(1000);
 
+	frontRight->setMotorDirection(message.Motors[0].Direction);
+	frontLeft->setMotorDirection(message.Motors[1].Direction);
+	backRight->setMotorDirection(message.Motors[2].Direction);
+	backLeft->setMotorDirection(message.Motors[3].Direction);
+
+	frontRight->setSpeed(message.Motors[0].Speed);
+	frontLeft->setSpeed(message.Motors[1].Speed);
+	backRight->setSpeed(message.Motors[2].Speed);
+	backLeft->setSpeed(message.Motors[3].Speed);
+	  
+        Serial.println(message.Motors[0].Direction + space + message.Motors[0].Speed);
+        Serial.println(message.Motors[1].Direction + space + message.Motors[1].Speed);
+        Serial.println(message.Motors[2].Direction + space + message.Motors[2].Speed);
+        Serial.println(message.Motors[3].Direction + space + message.Motors[3].Speed);
+  }  
+
+  delay(50);
 }
