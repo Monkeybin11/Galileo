@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal interface II2CBus : IConfigured, IDisposable
+    internal interface II2CBus : IConfigurable, IDisposable
     {
         string BusPath { get; }
 

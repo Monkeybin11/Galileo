@@ -5,12 +5,11 @@ using System.Xml.Linq;
 using GalileoDriver.Exceptions;
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
+using Microsoft.Practices.Unity.Configuration;
 using NLog;
 
 namespace GalileoDriver
 {
-    using Microsoft.Practices.Unity.Configuration;
-
     public class GalileoDriver : IDisposable
     {
         private const string ConfigurationElement = @"Configuration";
@@ -19,6 +18,7 @@ namespace GalileoDriver
         private const string DefaultConfigSectionName = @"Main";
         
         private readonly UnityContainer container;
+        private ConnectionsPool connectionsPool = new ConnectionsPool();
 
         private readonly Logger log = LogManager.GetCurrentClassLogger();
 
@@ -110,7 +110,7 @@ namespace GalileoDriver
                     configuration = configElements.First();
                 }
 
-                InitializeConfiguredItems(configuration, DriverConfigurationConstant.ConnectionSectionName, typeof(II2CBus));
+                InitializeConnectionsPool(configuration);
                 InitializeConfiguredItems(configuration, DriverConfigurationConstant.DriversElementName, typeof(Driver));
 
             }
@@ -120,6 +120,18 @@ namespace GalileoDriver
                 return false;
             }
             return true;
+        }
+
+        private void InitializeConnectionsPool(XElement configuration)
+        {
+            connectionsPool = new ConnectionsPool();
+            if (configuration.Element(DriverConfigurationConstant.ConnectionSectionName) == null)
+            {
+                log.Error("No connections in the current configuration");
+                return;
+            }
+            
+            connectionsPool.Initialize(configuration.Element(DriverConfigurationConstant.ConnectionSectionName)); 
         }
 
         private void InitializeConfiguredItems(XElement configuration, string collectionName, Type itemType)
@@ -135,13 +147,13 @@ namespace GalileoDriver
 
                 var name = itemName != null ? itemName.Value : element.Name.LocalName;
 
-                log.Info("Start resolving '{0}' driver", name);
+                log.Info("Start resolving '{0}'", name);
                 if (string.IsNullOrEmpty(name))
                 {
                     log.Error("Driver name not retrived. \n{0}", element.ToString());
                 }
 
-                var result = (IConfigured)container.Resolve(itemType, name);
+                var result = (IConfigurable)container.Resolve(itemType, name);
                 result.Initialize(element, container);
             }
         }

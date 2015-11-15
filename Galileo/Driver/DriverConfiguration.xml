@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <DriverConfigurations>
   <Configuration name="Main">
-    
+
     <Connections>
-      <Connection type="I2C" name="I2C_1" address="/dev/i2c-1"/>
+      <Connection type="I2C" name ="TransmissionConnection_I2C" address="/dev/i2c-1" port="42"/>
+      <!--      <Connection type="WCF" name ="Test_TransmissionConnection_WCF"/>-->
     </Connections>
-    
+
     <Drivers>
       <Transmission version="1.0.0.0" name="Transmission">
-        <Connection name="I2C_1" port ="42"/>
+        <Connection name="TransmissionConnection_I2C"/>
         <Vhiles>
           <Vhile name="FrontLeft" />
           <Vhile name="FrontRight" />
@@ -16,11 +17,13 @@
           <Vhile name="BackRight"/>
         </Vhiles>
       </Transmission>
-      
+
       <CameraNavigator version="1.0" name="CameraNavigator">
         <Connection name="I2cConnectionBus" port ="40"/>
       </CameraNavigator>
-      
+
+      <Camera version="1.0.0.0" name="Camera"/>
+      <Camera version="1.0.0.0" name="Camera"/>
     </Drivers>
   </Configuration>
 </DriverConfigurations>

@@ -8,12 +8,12 @@
     {
         public CameraNavigatorDriver()
         {
-            log.Info("Camera motion driver");
+            this.Log.Info("Camera motion driver");
         }
 
         public override void Initialize(XElement configuration, UnityContainer container)
         {
-            log.Info("Initialization");
+            this.Log.Info("Initialization");
         }
     }
 }

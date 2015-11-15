@@ -4,7 +4,7 @@ namespace GalileoDriver
 {   
     using Microsoft.Practices.Unity;
 
-    internal interface IConfigured
+    internal interface IConfigurable
     {
         void Initialize(XElement configuration, UnityContainer container);
     }

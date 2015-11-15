@@ -41,7 +41,7 @@
 //            try
 //            {
 //
-//                Name = config.Attribute(DriverConfigurationConstant.NameA) != null ? config.Attribute(DriverConfigurationConstant.NameA).Value : string.Empty;
+//                Name = config.Attribute(DriverConfigurationConstant.NameAttribute) != null ? config.Attribute(DriverConfigurationConstant.NameAttribute).Value : string.Empty;
 //
 //                // Enable device
 //                IsEnable = false;

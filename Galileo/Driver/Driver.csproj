@@ -58,15 +58,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CameraDriver.cs" />
     <Compile Include="CameraNavigatorDriver.cs" />
     <Compile Include="Connection\ConnectionProtocolType.cs" />
+    <Compile Include="Connection\ConnectionsPool.cs" />
     <Compile Include="Connection\I2CBusMock.cs" />
     <Compile Include="Connection\II2CBus.cs" />
     <Compile Include="Driver.cs" />
     <Compile Include="Exceptions\InvalidDriverConfiguration.cs" />
     <Compile Include="GalileoDriver.cs" />
     <Compile Include="Connection\I2cConnection.cs" />
-    <Compile Include="IConfigured.cs" />
+    <Compile Include="IConfigurable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Connection\I2CBus.cs" />
     <Compile Include="RaspberryPi2.cs" />
