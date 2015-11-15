@@ -1,3 +1,0 @@
-[submodule "Submodules/ArduinoProMicro"]
-	path = Submodules/ArduinoProMicro
-	url = https://github.com/sparkfun/SF32u4_boards.git
